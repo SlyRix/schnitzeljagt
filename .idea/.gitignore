@@ -13,3 +13,4 @@
 *.png
 *.mov
 *.mp4
+package-lock.json
