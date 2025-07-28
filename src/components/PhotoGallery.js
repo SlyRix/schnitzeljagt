@@ -17,35 +17,54 @@ const PhotoGallery = ({ photos, stationTitle }) => {
     }
 
     const nextPhoto = () => {
+        if (!photos || photos.length === 0) return;
         setCurrentIndex((prev) => (prev + 1) % photos.length);
     };
 
     const prevPhoto = () => {
+        if (!photos || photos.length === 0) return;
         setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
     };
 
     const goToPhoto = (index) => {
+        if (!photos || index < 0 || index >= photos.length) return;
         setCurrentIndex(index);
     };
 
     // Prüfe ob aktuelles Item ein Video ist
     const isVideo = (item) => {
+        if (!item) return false; // Null-Check hinzugefügt
         if (typeof item === 'string') {
-            return item.includes('.mp4') || item.includes('.mov') || item.includes('.webm');
+            return item.toLowerCase().includes('.mp4') ||
+                item.toLowerCase().includes('.mov') ||
+                item.toLowerCase().includes('.webm');
         }
-        return item.type === 'video';
+        return item && item.type === 'video'; // Zusätzlicher Null-Check
     };
 
     // URL extrahieren (falls es ein Objekt ist)
     const getItemSrc = (item) => {
-        return typeof item === 'string' ? item : item.src;
+        if (!item) return ''; // Null-Check hinzugefügt
+        return typeof item === 'string' ? item : (item.src || '');
     };
 
     // Auto-play Video wenn auf Video gewechselt wird
     useEffect(() => {
-        if (videoRef.current && isVideo(photos[currentIndex])) {
-            videoRef.current.play().catch(() => {
-                // Falls autoplay blockiert wird, passiert nichts schlimmes
+        if (videoRef.current &&
+            photos &&
+            photos[currentIndex] &&
+            isVideo(photos[currentIndex])) {
+            // Versuche Video mit Ton zu starten
+            videoRef.current.muted = false;
+            videoRef.current.play().catch((error) => {
+                // Falls autoplay mit Ton blockiert wird, versuche es stumm
+                console.log('Autoplay mit Ton wurde blockiert:', error);
+                if (videoRef.current) {
+                    videoRef.current.muted = true;
+                    videoRef.current.play().catch(() => {
+                        console.log('Auch stummer Autoplay wurde blockiert');
+                    });
+                }
             });
         }
     }, [currentIndex, photos]);
@@ -95,10 +114,19 @@ const PhotoGallery = ({ photos, stationTitle }) => {
         setIsSwiping(false);
     };
 
-    // Nur ein Item (Foto oder Video)
+    // Nur ein Item (Foto oder Video) - mit Null-Check
     if (photos.length === 1) {
-        const itemSrc = getItemSrc(photos[0]);
-        const singleIsVideo = isVideo(photos[0]);
+        const singleItem = photos[0];
+        if (!singleItem) {
+            return (
+                <div className="photo-placeholder">
+                    📸 Foto wird geladen...
+                </div>
+            );
+        }
+
+        const itemSrc = getItemSrc(singleItem);
+        const singleIsVideo = isVideo(singleItem);
 
         return (
             <div className="photo-gallery-new">
@@ -109,12 +137,10 @@ const PhotoGallery = ({ photos, stationTitle }) => {
                             src={itemSrc}
                             className="gallery-image-new gallery-video-new"
                             controls
-                            unmuted
                             playsInline
                             autoPlay
                             loop
                             key={currentIndex}
-
                         />
                     ) : (
                         <img
@@ -129,8 +155,16 @@ const PhotoGallery = ({ photos, stationTitle }) => {
         );
     }
 
-    // Aktuelles Item
-    const currentItem = photos[currentIndex];
+    // Aktuelles Item - mit Null-Check
+    const currentItem = photos && photos[currentIndex] ? photos[currentIndex] : null;
+    if (!currentItem) {
+        return (
+            <div className="photo-placeholder">
+                📸 Foto wird geladen...
+            </div>
+        );
+    }
+
     const currentIsVideo = isVideo(currentItem);
     const currentSrc = getItemSrc(currentItem);
 
@@ -151,8 +185,8 @@ const PhotoGallery = ({ photos, stationTitle }) => {
                         src={currentSrc}
                         className="gallery-image-new gallery-video-new"
                         controls
-                        muted
                         playsInline
+                        loop
                         key={currentIndex}
                     />
                 ) : (

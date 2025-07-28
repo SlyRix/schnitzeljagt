@@ -1,8 +1,8 @@
 export const stations = {
     start: {
-        number: "❤️",
-        title: "Alles Gute zum Geburtstag!",
-        subtitle: "Eine Reise durch unsere schönsten Erinnerungen",
+        number: "🎂",
+        title: "Happy Birthday Sivani!",
+        subtitle: "Eine Reise durch unsere schönsten Erinnerungen - zu deinem 26. Geburtstag 2025",
         isStart: true
     },
     pingpong: {
@@ -10,33 +10,54 @@ export const stations = {
         title: "🏓Ping Pong🏓",
         memory: "Lieb üsi Ping Pong Partie, wo du mich immer wieder mal besiegt hasch!💀, aber ihrgend wie hats trotztdem Spass gmacht. Isch glaub langsam ziit zum Dich als Ping Pong Queen zkröne! 👑",
         photos: [
-            "/images/pingpong1.jpeg",
-            "/images/pingpong3.jpeg",
-            { type: "video", src: "/videos/pingpong1.MP4" },
-            "/images/pingpong4.jpg"
+            "/images/pingpong/pingpong1.jpeg",
+            "/images/pingpong/pingpong3.jpeg",
+            { type: "video", src: "/videos/pingpong1.mp4" },
+            { type: "video", src: "/videos/looser.MOV" },
+            "/images/pingpong/pingpong4.jpg"
         ], // Array für mehrere Fotos
-        hint: "[Hier deinen Hinweis zum Lieblings-Parkplatz einfügen]",
+        hint: "Gömmer mal zu üse lieblings Parkplatz/Spot. Döt wartet e wiiteri Erinnerung uf dich! 🚗",
         nextStation: "parkplatz",
         prevStation: "start"
     },
     parkplatz: {
         number: "2",
         title: "Lieblings Parkplatz",
-        memory: "[Hier deine Erinnerung an euren Lieblings-Parkplatz einfügen]",
+        memory: "Ah dem ort händ mir scho so viel erlebt gueti und schlechti ziite.Wir hand zäme gschwätzt, gelacht und eifach d'Ziit gnosse. D'Erinnerige an die Momänt sind unvergesslich! ❤️",
         photos: [
-            "/images/parkplatz1.jpg"
+            "/images/auto/auto6.jpg",
+            "/images/auto/auto1.jpg",
+            "/images/auto/auto3.jpg",
+            "/images/auto/auto4.jpg",
+            "/images/auto/auto5.jpg",
+            "/images/auto/auto2.jpg",
+            "/images/auto/auto7.jpg",
+            "/images/auto/auto8.jpg",
+            "/images/auto/auto9.jpg",
+            "/images/auto/auto10.jpg",
+            "/images/auto/auto11.jpg",
+            "/images/auto/auto12.jpg",
+            "/images/auto/auto13.jpg",
+            "/images/auto/auto14.jpg",
+            "/images/auto/auto15.jpg",
+            { type: "video", src: "/videos/auto1.mp4" },
+            { type: "video", src: "/videos/auto2.mp4" },
+
         ], // Nur ein Foto
-        hint: "[Hier deinen Hinweis zu Starbucks einfügen]",
+        hint: "Ez deffsch mal go chille en chillige iced cafe latte mit caramel sirup go trinke. ☕️, dort wartet die nächste Surprise uf dich! 🏪",
         nextStation: "starbucks",
         prevStation: "pingpong"
     },
     starbucks: {
         number: "3",
         title: "Starbucks",
-        memory: "[Hier deine Starbucks-Erinnerung einfügen]",
+        memory: "So gnüss dini Kaffi und Gschenkli 😊. Hoffe es gfallt dir! denkt ich hau mal paar erinnerigs Fotis ine vo letzt Geburtstag.",
         photos: [
-            "/images/starbucks1.jpg",
-            "/images/starbucks2.jpg"
+            "/images/starbi/starbi1.jpg",
+            "/images/starbi/starbi2.jpg",
+            "/images/starbi/starbi3.jpg",
+            "/images/starbi/starbi4.jpg",
+
         ], // Zwei Fotos
         hint: "[Hier deinen Hinweis zur OST Schule einfügen]",
         nextStation: "ost",

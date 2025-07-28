@@ -3,19 +3,27 @@ import Navigation from './Navigation';
 import PhotoGallery from './PhotoGallery';
 
 const HeartIcon = () => (
-    <span className="heart">❤️</span>
+    <span className="heart">💕</span>
 );
 
 const FinalScreen = ({ station, onNavigate }) => {
     return (
         <div>
             <div className="station-header">
+                <div className="birthday-decoration">🎊 🎂 🎈 🎁 🎉</div>
                 <div className="station-number">{station.number}</div>
                 <h2 className="station-title">{station.title} <HeartIcon /></h2>
             </div>
 
             <div className="final-screen">
-                <h1 className="final-title">Herzlichen Glückwunsch!</h1>
+                <h1 className="final-title">🎉 Mission erfüllt! 🎉</h1>
+                <div className="birthday-message">
+                    <div className="big-age">2️⃣6️⃣</div>
+                    <div className="birthday-wishes">
+                        Alles Liebe zum Geburtstag, Sivani! ✨
+                    </div>
+                </div>
+
                 <div className="memory-text">
                     {station.memory.split('\n').map((line, index) => (
                         <React.Fragment key={index}>
@@ -26,6 +34,15 @@ const FinalScreen = ({ station, onNavigate }) => {
                 </div>
 
                 <PhotoGallery photos={station.photos} stationTitle={station.title} />
+
+                <div className="birthday-footer">
+                    <div className="celebration-text">
+                        🎂 Sivani's 26. Geburtstag 2025 🎂
+                    </div>
+                    <div className="love-message">
+                        Eine Reise durch unsere Erinnerungen 💕
+                    </div>
+                </div>
             </div>
 
             <Navigation
