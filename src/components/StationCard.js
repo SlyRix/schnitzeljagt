@@ -13,7 +13,7 @@ const HeartIcon = () => (
             }, 10);
         }}
     >
-    ❤️
+
   </span>
 );
 

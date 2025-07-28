@@ -1,10 +1,11 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 const PhotoGallery = ({ photos, stationTitle }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [startX, setStartX] = useState(0);
     const [isSwiping, setIsSwiping] = useState(false);
     const containerRef = useRef(null);
+    const videoRef = useRef(null);
 
     // Fallback wenn keine Fotos/Videos
     if (!photos || photos.length === 0) {
@@ -39,6 +40,15 @@ const PhotoGallery = ({ photos, stationTitle }) => {
     const getItemSrc = (item) => {
         return typeof item === 'string' ? item : item.src;
     };
+
+    // Auto-play Video wenn auf Video gewechselt wird
+    useEffect(() => {
+        if (videoRef.current && isVideo(photos[currentIndex])) {
+            videoRef.current.play().catch(() => {
+                // Falls autoplay blockiert wird, passiert nichts schlimmes
+            });
+        }
+    }, [currentIndex, photos]);
 
     // Touch Start
     const handleTouchStart = (e) => {
@@ -95,11 +105,16 @@ const PhotoGallery = ({ photos, stationTitle }) => {
                 <div className="gallery-wrapper-new">
                     {singleIsVideo ? (
                         <video
+                            ref={videoRef}
                             src={itemSrc}
                             className="gallery-image-new gallery-video-new"
                             controls
-                            muted
+                            unmuted
                             playsInline
+                            autoPlay
+                            loop
+                            key={currentIndex}
+
                         />
                     ) : (
                         <img
@@ -132,6 +147,7 @@ const PhotoGallery = ({ photos, stationTitle }) => {
             >
                 {currentIsVideo ? (
                     <video
+                        ref={videoRef}
                         src={currentSrc}
                         className="gallery-image-new gallery-video-new"
                         controls

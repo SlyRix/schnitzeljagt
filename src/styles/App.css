@@ -201,8 +201,8 @@ body {
     border-radius: 15px;
     overflow: hidden;
     width: 100%;
-    min-height: 200px;
-    max-height: 400px;
+    min-height: 250px;
+    max-height: 80vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -429,8 +429,8 @@ body {
 
     /* Mobile Gallery */
     .gallery-wrapper-new {
-        min-height: 180px;
-        max-height: 300px;
+        min-height: 200px;
+        max-height: 70vh;
     }
 
     .arrow-btn-new {
@@ -473,15 +473,15 @@ body {
 /* Tablet */
 @media (min-width: 481px) and (max-width: 768px) {
     .gallery-wrapper-new {
-        min-height: 220px;
-        max-height: 350px;
+        min-height: 250px;
+        max-height: 75vh;
     }
 }
 
 /* Desktop */
 @media (min-width: 769px) {
     .gallery-wrapper-new {
-        min-height: 250px;
-        max-height: 400px;
+        min-height: 300px;
+        max-height: 80vh;
     }
 }

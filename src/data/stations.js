@@ -7,12 +7,13 @@ export const stations = {
     },
     pingpong: {
         number: "1",
-        title: "Ping Pong",
-        memory: "[Hier kannst du eure Erinnerung an den Ping Pong Ort einfügen]",
+        title: "🏓Ping Pong🏓",
+        memory: "Lieb üsi Ping Pong Partie, wo du mich immer wieder mal besiegt hasch!💀, aber ihrgend wie hats trotztdem Spass gmacht. Isch glaub langsam ziit zum Dich als Ping Pong Queen zkröne! 👑",
         photos: [
-            "/images/pingpong1.jpg",
+            "/images/pingpong1.jpeg",
+            "/images/pingpong3.jpeg",
             { type: "video", src: "/videos/pingpong1.MP4" },
-            "/images/pingpong3.jpg"
+            "/images/pingpong4.jpg"
         ], // Array für mehrere Fotos
         hint: "[Hier deinen Hinweis zum Lieblings-Parkplatz einfügen]",
         nextStation: "parkplatz",
