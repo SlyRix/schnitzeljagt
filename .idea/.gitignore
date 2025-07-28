@@ -14,3 +14,5 @@
 *.mov
 *.mp4
 package-lock.json
+/src/package-lock.json
+*/src/package-lock.json
