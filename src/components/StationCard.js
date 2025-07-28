@@ -1,5 +1,7 @@
 import React from 'react';
 import PhotoGallery from './PhotoGallery';
+import Navigation from './Navigation';
+const DEV_MODE = true;
 
 const HeartIcon = () => (
     <span
@@ -43,6 +45,9 @@ const StationCard = ({ station, stationKey, onNavigate }) => {
                     </div>
                 </div>
             )}
+
+            {/* DEV NAVIGATION - Kommentiere diese Zeile aus für Production */}
+            {DEV_MODE && <Navigation station={station} onNavigate={onNavigate} />}
         </div>
     );
 };

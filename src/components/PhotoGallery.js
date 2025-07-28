@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 const PhotoGallery = ({ photos, stationTitle }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [startX, setStartX] = useState(0);
+    const [isSwiping, setIsSwiping] = useState(false);
+    const containerRef = useRef(null);
 
+    // Fallback wenn keine Fotos/Videos
     if (!photos || photos.length === 0) {
         return (
             <div className="photo-placeholder">
-                📸 Hier deine Fotos einfügen
+                📸 Hier deine Fotos/Videos einfügen
             </div>
         );
     }
@@ -23,52 +27,163 @@ const PhotoGallery = ({ photos, stationTitle }) => {
         setCurrentIndex(index);
     };
 
-    // Wenn nur ein Foto, zeige es einfach ohne Swipe-Funktionalität
+    // Prüfe ob aktuelles Item ein Video ist
+    const isVideo = (item) => {
+        if (typeof item === 'string') {
+            return item.includes('.mp4') || item.includes('.mov') || item.includes('.webm');
+        }
+        return item.type === 'video';
+    };
+
+    // URL extrahieren (falls es ein Objekt ist)
+    const getItemSrc = (item) => {
+        return typeof item === 'string' ? item : item.src;
+    };
+
+    // Touch Start
+    const handleTouchStart = (e) => {
+        setStartX(e.touches[0].clientX);
+        setIsSwiping(true);
+    };
+
+    // Touch End
+    const handleTouchEnd = (e) => {
+        if (!isSwiping) return;
+
+        const endX = e.changedTouches[0].clientX;
+        const diff = startX - endX;
+        const minSwipeDistance = 50;
+
+        if (diff > minSwipeDistance) {
+            nextPhoto(); // Swipe links = nächstes
+        } else if (diff < -minSwipeDistance) {
+            prevPhoto(); // Swipe rechts = vorheriges
+        }
+
+        setIsSwiping(false);
+    };
+
+    // Mouse Events für Desktop
+    const handleMouseDown = (e) => {
+        setStartX(e.clientX);
+        setIsSwiping(true);
+    };
+
+    const handleMouseUp = (e) => {
+        if (!isSwiping) return;
+
+        const endX = e.clientX;
+        const diff = startX - endX;
+        const minSwipeDistance = 50;
+
+        if (diff > minSwipeDistance) {
+            nextPhoto();
+        } else if (diff < -minSwipeDistance) {
+            prevPhoto();
+        }
+
+        setIsSwiping(false);
+    };
+
+    // Nur ein Item (Foto oder Video)
     if (photos.length === 1) {
+        const itemSrc = getItemSrc(photos[0]);
+        const singleIsVideo = isVideo(photos[0]);
+
         return (
-            <div className="photo-gallery single">
-                <img
-                    src={photos[0]}
-                    alt={`${stationTitle} - Foto`}
-                    className="gallery-image"
-                />
+            <div className="photo-gallery-new">
+                <div className="gallery-wrapper-new">
+                    {singleIsVideo ? (
+                        <video
+                            src={itemSrc}
+                            className="gallery-image-new gallery-video-new"
+                            controls
+                            muted
+                            playsInline
+                        />
+                    ) : (
+                        <img
+                            src={itemSrc}
+                            alt={`${stationTitle} - Foto`}
+                            className="gallery-image-new"
+                            draggable={false}
+                        />
+                    )}
+                </div>
             </div>
         );
     }
 
+    // Aktuelles Item
+    const currentItem = photos[currentIndex];
+    const currentIsVideo = isVideo(currentItem);
+    const currentSrc = getItemSrc(currentItem);
+
     return (
-        <div className="photo-gallery">
-            <div className="gallery-container">
-                <button className="gallery-nav prev" onClick={prevPhoto}>
+        <div className="photo-gallery-new">
+            {/* Haupt-Galerie */}
+            <div
+                ref={containerRef}
+                className="gallery-wrapper-new swipeable"
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+            >
+                {currentIsVideo ? (
+                    <video
+                        src={currentSrc}
+                        className="gallery-image-new gallery-video-new"
+                        controls
+                        muted
+                        playsInline
+                        key={currentIndex}
+                    />
+                ) : (
+                    <img
+                        src={currentSrc}
+                        alt={`${stationTitle} - ${currentIsVideo ? 'Video' : 'Foto'} ${currentIndex + 1}`}
+                        className="gallery-image-new"
+                        draggable={false}
+                    />
+                )}
+
+                {/* Pfeil-Buttons */}
+                <button
+                    className="arrow-btn-new prev-arrow-new"
+                    onClick={prevPhoto}
+                >
                     ←
                 </button>
-
-                <div className="gallery-main">
-                    <img
-                        src={photos[currentIndex]}
-                        alt={`${stationTitle} - Foto ${currentIndex + 1}`}
-                        className="gallery-image"
-                    />
-
-                    {/* Photo counter */}
-                    <div className="photo-counter">
-                        {currentIndex + 1} / {photos.length}
-                    </div>
-                </div>
-
-                <button className="gallery-nav next" onClick={nextPhoto}>
+                <button
+                    className="arrow-btn-new next-arrow-new"
+                    onClick={nextPhoto}
+                >
                     →
                 </button>
+
+                {/* Counter mit Icon */}
+                <div className="photo-counter-new">
+                    {currentIsVideo ? '🎥' : '📸'} {currentIndex + 1} / {photos.length}
+                </div>
+
+                {/* Swipe-Hint */}
+                <div className="swipe-hint-new">
+                    ← Swipe →
+                </div>
             </div>
 
-            {/* Dots indicator */}
-            <div className="gallery-dots">
-                {photos.map((_, index) => (
+            {/* Dots mit Video-Icons */}
+            <div className="gallery-dots-new">
+                {photos.map((item, index) => (
                     <button
                         key={index}
-                        className={`dot ${index === currentIndex ? 'active' : ''}`}
+                        className={`dot-new ${index === currentIndex ? 'active' : ''} ${isVideo(item) ? 'video-dot' : ''}`}
                         onClick={() => goToPhoto(index)}
-                    />
+                        title={isVideo(item) ? 'Video' : 'Foto'}
+                    >
+                        {isVideo(item) && <span className="dot-icon">🎥</span>}
+                    </button>
                 ))}
             </div>
         </div>

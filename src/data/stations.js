@@ -11,7 +11,7 @@ export const stations = {
         memory: "[Hier kannst du eure Erinnerung an den Ping Pong Ort einfügen]",
         photos: [
             "/images/pingpong1.jpg",
-            "/images/pingpong2.jpg",
+            { type: "video", src: "/videos/pingpong1.MP4" },
             "/images/pingpong3.jpg"
         ], // Array für mehrere Fotos
         hint: "[Hier deinen Hinweis zum Lieblings-Parkplatz einfügen]",
