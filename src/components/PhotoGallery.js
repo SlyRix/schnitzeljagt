@@ -8,6 +8,7 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
     const [showPasswordModal, setShowPasswordModal] = useState(false);
     const containerRef = useRef(null);
     const videoRef = useRef(null);
+    const dotsRef = useRef(null);
 
     // Fallback wenn keine Fotos/Videos
     if (!photos || photos.length === 0) {
@@ -18,6 +19,32 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
         );
     }
 
+    // Funktion um zu entscheiden, welche Dot-Darstellung verwendet wird
+    const getDotContainerClass = (photoCount) => {
+        if (photoCount > 15) return 'gallery-dots-scrollable';
+        if (photoCount > 8) return 'gallery-dots-new many-dots';
+        return 'gallery-dots-new';
+    };
+
+    // Funktion um den aktiven Dot in den sichtbaren Bereich zu scrollen
+    const scrollToActiveDot = (containerRef, currentIndex, photoCount) => {
+        if (photoCount <= 15) return;
+
+        const container = containerRef.current;
+        if (!container) return;
+
+        const dots = container.children;
+        const activeDot = dots[currentIndex];
+
+        if (activeDot) {
+            activeDot.scrollIntoView({
+                behavior: 'smooth',
+                block: 'nearest',
+                inline: 'center'
+            });
+        }
+    };
+
     const nextPhoto = () => {
         if (!photos || photos.length === 0) return;
         setCurrentIndex((prev) => (prev + 1) % photos.length);
@@ -26,6 +53,29 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
     const prevPhoto = () => {
         if (!photos || photos.length === 0) return;
         setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
+    };
+
+    // Jump to first photo
+    const jumpToFirst = () => {
+        if (!photos || photos.length === 0) return;
+        const firstItem = photos[0];
+        if (isProtected(firstItem) && !isPasswordUnlocked) {
+            setShowPasswordModal(true);
+            return;
+        }
+        setCurrentIndex(0);
+    };
+
+    // Jump to last photo
+    const jumpToLast = () => {
+        if (!photos || photos.length === 0) return;
+        const lastIndex = photos.length - 1;
+        const lastItem = photos[lastIndex];
+        if (isProtected(lastItem) && !isPasswordUnlocked) {
+            setShowPasswordModal(true);
+            return;
+        }
+        setCurrentIndex(lastIndex);
     };
 
     const goToPhoto = (index) => {
@@ -73,6 +123,13 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
     const handlePasswordSuccess = () => {
         onPasswordUnlock();
     };
+
+    // Auto-Scroll zu aktivem Dot
+    useEffect(() => {
+        if (photos && photos.length > 15) {
+            scrollToActiveDot(dotsRef, currentIndex, photos.length);
+        }
+    }, [currentIndex, photos]);
 
     // Auto-play Video wenn auf Video gewechselt wird
     useEffect(() => {
@@ -162,6 +219,94 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
                         <div className="photo-placeholder-protected">📸</div>
                     )}
                 </div>
+            </div>
+        );
+    };
+
+    // Render Dots mit verbesserter Logik - OHNE Nummerierung
+    const renderDots = () => {
+        if (!photos || photos.length <= 1) return null;
+
+        const photoCount = photos.length;
+        const dotContainerClass = getDotContainerClass(photoCount);
+
+        // Für sehr viele Bilder: Kompakte Navigation OHNE Counter
+        if (photoCount > 20) {
+            return (
+                <div className="gallery-navigation">
+                    {/* Jump to first button */}
+                    <button
+                        className="jump-btn"
+                        onClick={jumpToFirst}
+                        title="Zum ersten Bild"
+                    >
+                        ⇤
+                    </button>
+
+                    {/* Zentrale Dots - nur 5 um das aktuelle herum */}
+                    <div className="navigation-dots">
+                        {photos.slice(Math.max(0, currentIndex - 2), Math.min(photos.length, currentIndex + 3)).map((item, relativeIndex) => {
+                            const actualIndex = Math.max(0, currentIndex - 2) + relativeIndex;
+                            const dotIsVideo = isVideo(item);
+                            const dotIsProtected = isProtected(item);
+
+                            return (
+                                <button
+                                    key={actualIndex}
+                                    className={`dot-new ${actualIndex === currentIndex ? 'active' : ''} 
+                                               ${dotIsVideo ? 'video-dot' : ''} 
+                                               ${dotIsProtected ? 'protected-dot' : ''}`}
+                                    onClick={() => goToPhoto(actualIndex)}
+                                    title={dotIsProtected && !isPasswordUnlocked ? 'Geschützt' :
+                                        dotIsVideo ? 'Video' : 'Foto'}
+                                >
+                                    {dotIsProtected && !isPasswordUnlocked ? (
+                                        <span className="dot-icon">🔐</span>
+                                    ) : dotIsVideo ? (
+                                        <span className="dot-icon">🎥</span>
+                                    ) : null}
+                                </button>
+                            );
+                        })}
+                    </div>
+
+                    {/* Jump to last button */}
+                    <button
+                        className="jump-btn"
+                        onClick={jumpToLast}
+                        title="Zum letzten Bild"
+                    >
+                        ⇥
+                    </button>
+                </div>
+            );
+        }
+
+        // Standard Dots für normale Anzahl
+        return (
+            <div className={dotContainerClass} ref={dotsRef}>
+                {photos.map((item, index) => {
+                    const dotIsVideo = isVideo(item);
+                    const dotIsProtected = isProtected(item);
+
+                    return (
+                        <button
+                            key={index}
+                            className={`dot-new ${index === currentIndex ? 'active' : ''} 
+                                       ${dotIsVideo ? 'video-dot' : ''} 
+                                       ${dotIsProtected ? 'protected-dot' : ''}`}
+                            onClick={() => goToPhoto(index)}
+                            title={dotIsProtected && !isPasswordUnlocked ? 'Geschützt' :
+                                dotIsVideo ? 'Video' : 'Foto'}
+                        >
+                            {dotIsProtected && !isPasswordUnlocked ? (
+                                <span className="dot-icon">🔐</span>
+                            ) : dotIsVideo ? (
+                                <span className="dot-icon">🎥</span>
+                            ) : null}
+                        </button>
+                    );
+                })}
             </div>
         );
     };
@@ -276,7 +421,7 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
                     →
                 </button>
 
-                {/* Counter mit Icon */}
+                {/* Counter mit Icon - BLEIBT oben rechts */}
                 <div className="photo-counter-new">
                     {currentIsProtected && !isPasswordUnlocked ? '🔐' :
                         currentIsVideo ? '🎥' : '📸'} {currentIndex + 1} / {photos.length}
@@ -288,32 +433,8 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
                 </div>
             </div>
 
-            {/* Dots mit Video-Icons und Protected-Icons */}
-            <div className="gallery-dots-new">
-                {photos.map((item, index) => {
-                    const dotIsVideo = isVideo(item);
-                    const dotIsProtected = isProtected(item);
-                    const isAccessible = !dotIsProtected || isPasswordUnlocked;
-
-                    return (
-                        <button
-                            key={index}
-                            className={`dot-new ${index === currentIndex ? 'active' : ''} 
-                                       ${dotIsVideo ? 'video-dot' : ''} 
-                                       ${dotIsProtected ? 'protected-dot' : ''}`}
-                            onClick={() => goToPhoto(index)}
-                            title={dotIsProtected && !isPasswordUnlocked ? 'Geschützt' :
-                                dotIsVideo ? 'Video' : 'Foto'}
-                        >
-                            {dotIsProtected && !isPasswordUnlocked ? (
-                                <span className="dot-icon">🔐</span>
-                            ) : dotIsVideo ? (
-                                <span className="dot-icon">🎥</span>
-                            ) : null}
-                        </button>
-                    );
-                })}
-            </div>
+            {/* Verbesserte Dots - OHNE zusätzliche Nummerierung */}
+            {renderDots()}
 
             <PasswordModal
                 isOpen={showPasswordModal}
