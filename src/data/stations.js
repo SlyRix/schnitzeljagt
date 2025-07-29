@@ -44,7 +44,7 @@ export const stations = {
             { type: "video", src: "/videos/auto2.mp4" },
 
         ], // Nur ein Foto
-        hint: "Ez deffsch mal go chille en chillige iced cafe latte mit caramel sirup go trinke. ☕️, dort wartet die nächste Surprise uf dich! 🏪",
+        hint: "Ez deffsch mal go en chillige iced cafe latte mit caramel sirup go bstelle und trinke. ☕️, dort wartet die nächste Surprise uf dich! 🏪",
         nextStation: "starbucks",
         prevStation: "pingpong"
     },
@@ -59,21 +59,21 @@ export const stations = {
             "/images/starbi/starbi4.jpg",
 
         ], // Zwei Fotos
-        hint: "[Hier deinen Hinweis zur OST Schule einfügen]",
+        hint: "So gömmer go lerne, weisch no det woni uf dich am morge gwartet han zum dich gseh. Döt wartet die nächsti Erinnerig",
         nextStation: "ost",
         prevStation: "parkplatz"
     },
     ost: {
         number: "4",
-        title: "OST Schule",
-        memory: "[Hier deine Erinnerung an die OST Schule einfügen]",
+        title: "Good old Times",
+        memory: "Ich nimm dich mal mit uf en Rückblick i d'Ziit, chlini erinnerige an die guete alte Ziit. Ich hoffe du gniessisch es so wie ich. 🥰",
         photos: [
             "/images/ost1.jpg",
             "/images/ost2.jpg",
             "/images/ost3.jpg",
             "/images/ost4.jpg"
         ], // Vier Fotos
-        hint: "[Hier deinen Hinweis zu den Versteckspots einfügen]",
+        hint: "",
         nextStation: "versteck",
         prevStation: "starbucks"
     },
