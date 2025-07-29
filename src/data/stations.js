@@ -11,7 +11,10 @@ export const stations = {
         memory: "Lieb üsi Ping Pong Partie, wo du mich immer wieder mal besiegt hasch!💀, aber ihrgend wie hats trotztdem Spass gmacht. Isch glaub langsam ziit zum Dich als Ping Pong Queen zkröne! 👑",
         photos: [
             "/images/pingpong/pingpong1.jpeg",
-            "/images/pingpong/pingpong3.jpeg",
+            {
+                src: "/images/pingpong/pingpong3.jpeg",
+                protected: true  // Dieses Foto ist geschützt
+            },
             { type: "video", src: "/videos/pingpong1.mp4" },
             { type: "video", src: "/videos/looser.MOV" },
             "/images/pingpong/pingpong4.jpg"
@@ -26,7 +29,11 @@ export const stations = {
         memory: "Ah dem ort händ mir scho so viel erlebt gueti und schlechti ziite.Wir hand zäme gschwätzt, gelacht und eifach d'Ziit gnosse. D'Erinnerige an die Momänt sind unvergesslich! ❤️",
         photos: [
             "/images/auto/auto6.jpg",
-            "/images/auto/auto1.jpg",
+            {
+                src: "/images/auto/auto1.jpg",
+                protected: true  // Dieses Foto ist geschützt
+
+            },
             "/images/auto/auto3.jpg",
             "/images/auto/auto4.jpg",
             "/images/auto/auto5.jpg",

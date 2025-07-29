@@ -6,7 +6,7 @@ const HeartIcon = () => (
     <span className="heart">💕</span>
 );
 
-const FinalScreen = ({ station, onNavigate }) => {
+const FinalScreen = ({ station, onNavigate, isPasswordUnlocked, onPasswordUnlock }) => {
     return (
         <div>
             <div className="station-header">
@@ -33,7 +33,12 @@ const FinalScreen = ({ station, onNavigate }) => {
                     ))}
                 </div>
 
-                <PhotoGallery photos={station.photos} stationTitle={station.title} />
+                <PhotoGallery
+                    photos={station.photos}
+                    stationTitle={station.title}
+                    isPasswordUnlocked={isPasswordUnlocked}
+                    onPasswordUnlock={onPasswordUnlock}
+                />
 
                 <div className="birthday-footer">
                     <div className="celebration-text">

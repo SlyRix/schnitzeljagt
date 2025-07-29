@@ -6,6 +6,7 @@ import { stations } from './data/stations';
 
 function App() {
   const [currentStation, setCurrentStation] = useState('start');
+  const [isPasswordUnlocked, setIsPasswordUnlocked] = useState(false);
 
   // Get station from URL hash on component mount
   useEffect(() => {
@@ -20,6 +21,11 @@ function App() {
     setCurrentStation(stationId);
     window.location.hash = stationId;
     window.scrollTo(0, 0);
+  };
+
+  // Handle password unlock
+  const handlePasswordUnlock = () => {
+    setIsPasswordUnlocked(true);
   };
 
   const currentStationData = stations[currentStation];
@@ -41,6 +47,8 @@ function App() {
               <FinalScreen
                   station={currentStationData}
                   onNavigate={navigateToStation}
+                  isPasswordUnlocked={isPasswordUnlocked}
+                  onPasswordUnlock={handlePasswordUnlock}
               />
           )}
           {!currentStationData.isStart && !currentStationData.isFinal && (
@@ -48,6 +56,8 @@ function App() {
                   station={currentStationData}
                   stationKey={currentStation}
                   onNavigate={navigateToStation}
+                  isPasswordUnlocked={isPasswordUnlocked}
+                  onPasswordUnlock={handlePasswordUnlock}
               />
           )}
         </div>

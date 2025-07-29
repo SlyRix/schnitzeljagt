@@ -1,9 +1,11 @@
 import React, { useState, useRef, useEffect } from 'react';
+import PasswordModal from './PasswordModal';
 
-const PhotoGallery = ({ photos, stationTitle }) => {
+const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlock }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [startX, setStartX] = useState(0);
     const [isSwiping, setIsSwiping] = useState(false);
+    const [showPasswordModal, setShowPasswordModal] = useState(false);
     const containerRef = useRef(null);
     const videoRef = useRef(null);
 
@@ -28,24 +30,48 @@ const PhotoGallery = ({ photos, stationTitle }) => {
 
     const goToPhoto = (index) => {
         if (!photos || index < 0 || index >= photos.length) return;
+
+        // Prüfe ob das gewählte Foto geschützt ist
+        const selectedItem = photos[index];
+        if (isProtected(selectedItem) && !isPasswordUnlocked) {
+            setShowPasswordModal(true);
+            return;
+        }
+
         setCurrentIndex(index);
+    };
+
+    // Prüfe ob Item geschützt ist
+    const isProtected = (item) => {
+        if (!item) return false;
+        return item.protected === true;
     };
 
     // Prüfe ob aktuelles Item ein Video ist
     const isVideo = (item) => {
-        if (!item) return false; // Null-Check hinzugefügt
+        if (!item) return false;
         if (typeof item === 'string') {
             return item.toLowerCase().includes('.mp4') ||
                 item.toLowerCase().includes('.mov') ||
                 item.toLowerCase().includes('.webm');
         }
-        return item && item.type === 'video'; // Zusätzlicher Null-Check
+        return item && item.type === 'video';
     };
 
     // URL extrahieren (falls es ein Objekt ist)
     const getItemSrc = (item) => {
-        if (!item) return ''; // Null-Check hinzugefügt
+        if (!item) return '';
         return typeof item === 'string' ? item : (item.src || '');
+    };
+
+    // Handle protected content click
+    const handleProtectedClick = () => {
+        setShowPasswordModal(true);
+    };
+
+    // Handle password success
+    const handlePasswordSuccess = () => {
+        onPasswordUnlock();
     };
 
     // Auto-play Video wenn auf Video gewechselt wird
@@ -53,7 +79,8 @@ const PhotoGallery = ({ photos, stationTitle }) => {
         if (videoRef.current &&
             photos &&
             photos[currentIndex] &&
-            isVideo(photos[currentIndex])) {
+            isVideo(photos[currentIndex]) &&
+            (!isProtected(photos[currentIndex]) || isPasswordUnlocked)) {
             // Versuche Video mit Ton zu starten
             videoRef.current.muted = false;
             videoRef.current.play().catch((error) => {
@@ -67,7 +94,7 @@ const PhotoGallery = ({ photos, stationTitle }) => {
                 }
             });
         }
-    }, [currentIndex, photos]);
+    }, [currentIndex, photos, isPasswordUnlocked]);
 
     // Touch Start
     const handleTouchStart = (e) => {
@@ -114,7 +141,32 @@ const PhotoGallery = ({ photos, stationTitle }) => {
         setIsSwiping(false);
     };
 
-    // Nur ein Item (Foto oder Video) - mit Null-Check
+    // Render protected placeholder
+    const renderProtectedPlaceholder = (item) => {
+        const itemIsVideo = isVideo(item);
+        return (
+            <div className="protected-content" onClick={handleProtectedClick}>
+                <div className="protected-overlay">
+                    <div className="protected-icon">🔐</div>
+                    <div className="protected-text">
+                        {itemIsVideo ? 'Geschütztes Video' : 'Geschütztes Foto'}
+                    </div>
+                    <div className="protected-hint">
+                        Tippe um freizuschalten 💕
+                    </div>
+                </div>
+                <div className="protected-blur">
+                    {itemIsVideo ? (
+                        <div className="video-placeholder">🎥</div>
+                    ) : (
+                        <div className="photo-placeholder-protected">📸</div>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
+    // Nur ein Item (Foto oder Video)
     if (photos.length === 1) {
         const singleItem = photos[0];
         if (!singleItem) {
@@ -127,11 +179,14 @@ const PhotoGallery = ({ photos, stationTitle }) => {
 
         const itemSrc = getItemSrc(singleItem);
         const singleIsVideo = isVideo(singleItem);
+        const singleIsProtected = isProtected(singleItem);
 
         return (
             <div className="photo-gallery-new">
                 <div className="gallery-wrapper-new">
-                    {singleIsVideo ? (
+                    {singleIsProtected && !isPasswordUnlocked ? (
+                        renderProtectedPlaceholder(singleItem)
+                    ) : singleIsVideo ? (
                         <video
                             ref={videoRef}
                             src={itemSrc}
@@ -151,11 +206,17 @@ const PhotoGallery = ({ photos, stationTitle }) => {
                         />
                     )}
                 </div>
+
+                <PasswordModal
+                    isOpen={showPasswordModal}
+                    onClose={() => setShowPasswordModal(false)}
+                    onSuccess={handlePasswordSuccess}
+                />
             </div>
         );
     }
 
-    // Aktuelles Item - mit Null-Check
+    // Aktuelles Item
     const currentItem = photos && photos[currentIndex] ? photos[currentIndex] : null;
     if (!currentItem) {
         return (
@@ -167,6 +228,7 @@ const PhotoGallery = ({ photos, stationTitle }) => {
 
     const currentIsVideo = isVideo(currentItem);
     const currentSrc = getItemSrc(currentItem);
+    const currentIsProtected = isProtected(currentItem);
 
     return (
         <div className="photo-gallery-new">
@@ -179,7 +241,9 @@ const PhotoGallery = ({ photos, stationTitle }) => {
                 onMouseDown={handleMouseDown}
                 onMouseUp={handleMouseUp}
             >
-                {currentIsVideo ? (
+                {currentIsProtected && !isPasswordUnlocked ? (
+                    renderProtectedPlaceholder(currentItem)
+                ) : currentIsVideo ? (
                     <video
                         ref={videoRef}
                         src={currentSrc}
@@ -214,7 +278,8 @@ const PhotoGallery = ({ photos, stationTitle }) => {
 
                 {/* Counter mit Icon */}
                 <div className="photo-counter-new">
-                    {currentIsVideo ? '🎥' : '📸'} {currentIndex + 1} / {photos.length}
+                    {currentIsProtected && !isPasswordUnlocked ? '🔐' :
+                        currentIsVideo ? '🎥' : '📸'} {currentIndex + 1} / {photos.length}
                 </div>
 
                 {/* Swipe-Hint */}
@@ -223,19 +288,38 @@ const PhotoGallery = ({ photos, stationTitle }) => {
                 </div>
             </div>
 
-            {/* Dots mit Video-Icons */}
+            {/* Dots mit Video-Icons und Protected-Icons */}
             <div className="gallery-dots-new">
-                {photos.map((item, index) => (
-                    <button
-                        key={index}
-                        className={`dot-new ${index === currentIndex ? 'active' : ''} ${isVideo(item) ? 'video-dot' : ''}`}
-                        onClick={() => goToPhoto(index)}
-                        title={isVideo(item) ? 'Video' : 'Foto'}
-                    >
-                        {isVideo(item) && <span className="dot-icon">🎥</span>}
-                    </button>
-                ))}
+                {photos.map((item, index) => {
+                    const dotIsVideo = isVideo(item);
+                    const dotIsProtected = isProtected(item);
+                    const isAccessible = !dotIsProtected || isPasswordUnlocked;
+
+                    return (
+                        <button
+                            key={index}
+                            className={`dot-new ${index === currentIndex ? 'active' : ''} 
+                                       ${dotIsVideo ? 'video-dot' : ''} 
+                                       ${dotIsProtected ? 'protected-dot' : ''}`}
+                            onClick={() => goToPhoto(index)}
+                            title={dotIsProtected && !isPasswordUnlocked ? 'Geschützt' :
+                                dotIsVideo ? 'Video' : 'Foto'}
+                        >
+                            {dotIsProtected && !isPasswordUnlocked ? (
+                                <span className="dot-icon">🔐</span>
+                            ) : dotIsVideo ? (
+                                <span className="dot-icon">🎥</span>
+                            ) : null}
+                        </button>
+                    );
+                })}
             </div>
+
+            <PasswordModal
+                isOpen={showPasswordModal}
+                onClose={() => setShowPasswordModal(false)}
+                onSuccess={handlePasswordSuccess}
+            />
         </div>
     );
 };

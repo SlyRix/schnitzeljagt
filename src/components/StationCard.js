@@ -13,11 +13,11 @@ const HeartIcon = () => (
             }, 10);
         }}
     >
-
-  </span>
+        💕
+    </span>
 );
 
-const StationCard = ({ station, stationKey, onNavigate }) => {
+const StationCard = ({ station, stationKey, onNavigate, isPasswordUnlocked, onPasswordUnlock }) => {
     return (
         <div>
             <div className="station-header">
@@ -34,7 +34,12 @@ const StationCard = ({ station, stationKey, onNavigate }) => {
                 ))}
             </div>
 
-            <PhotoGallery photos={station.photos} stationTitle={station.title} />
+            <PhotoGallery
+                photos={station.photos}
+                stationTitle={station.title}
+                isPasswordUnlocked={isPasswordUnlocked}
+                onPasswordUnlock={onPasswordUnlock}
+            />
 
             {station.hint && (
                 <div className="hint-section">
