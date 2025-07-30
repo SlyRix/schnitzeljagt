@@ -1,7 +1,7 @@
 import React from 'react';
 import PhotoGallery from './PhotoGallery';
 import Navigation from './Navigation';
-const DEV_MODE = true;
+const DEV_MODE = false;
 
 const HeartIcon = () => (
     <span

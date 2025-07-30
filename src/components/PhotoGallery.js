@@ -424,7 +424,7 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
         const photoCount = photos.length;
         const dotContainerClass = getDotContainerClass(photoCount);
 
-        if (photoCount > 20) {
+        if (photoCount > 10) {
             return (
                 <div className="gallery-navigation">
                     <button className="jump-btn" onClick={jumpToFirst} title="Zum ersten Bild">⇤</button>
@@ -584,7 +584,7 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
                         currentIsVideo ? '🎥' : '📸'} {currentIndex + 1} / {photos.length}
                 </div>
 
-                <div className="swipe-hint-new">← Swipe →</div>
+                {/*<div className="swipe-hint-new">← Swipe →</div>*/}
             </div>
 
             {renderDots()}

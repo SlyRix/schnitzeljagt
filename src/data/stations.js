@@ -37,7 +37,6 @@ export const stations = {
             { type: "video", src: "/videos/auto/5.mp4" },
             "/images/auto/14.jpg",
             "/images/auto/5.jpg",
-            { type: "video", src: "/videos/auto/5.mp4" },
             "/images/auto/6.jpg",
             { type: "video", src: "/videos/auto/6.mov" },
             "/images/auto/7.jpg",
@@ -51,8 +50,7 @@ export const stations = {
             "/images/auto/0.jpg",
             "/images/auto/13.jpg",
             "/images/auto/15.jpg",
-            "/images/auto/16.jpg",
-
+            "/images/auto/16.jpg"
         ], // Nur ein Foto
         hint: "Ez deffsch mal go en chillige iced cafe latte mit caramel sirup go bstelle und trinke. ☕️, dort wartet die nächste Surprise uf dich! 🏪",
         nextStation: "starbucks",
@@ -113,7 +111,7 @@ export const stations = {
             { type: "video", src: "/videos/erinnerungen/20.mp4" },
             "/images/erinnerungen/21.jpg",
             "/images/erinnerungen/22.jpg",
-            "/images/erinnerungen/23.jpg",
+            "/images/erinnerungen/23.jpg"
         ], // Zwei Fotos
         hint: "",
         nextStation: "versteck",
@@ -141,7 +139,6 @@ export const stations = {
             { type: "video", src: "/videos/crazy/9.mov" },
             { type: "video", src: "/videos/crazy/10.mov" },
             { type: "video", src: "/videos/crazy/11.mp4" },
-
         ],
         hint: "[Hier deinen Hinweis zu dem Ort, wo ihr zusammengekommen seid, einfügen]",
         nextStation: "zusammen",
@@ -185,7 +182,23 @@ export const stations = {
         title: "Schaukel",
         memory: "[Hier deine Erinnerung an die Schaukel einfügen]",
         photos: [
-            "/images/schaukel1.jpg"
+            "/images/schaukel/2.jpg",
+            { type: "video", src: "/videos/schaukel/1.mp4" },
+            "/images/schaukel/4.jpg",
+            "/images/schaukel/04.jpg",
+            "/images/schaukel/3.jpg",
+            "/images/schaukel/5.jpg",
+            "/images/schaukel/05.jpg",
+            { type: "video", src: "/videos/schaukel/4.mp4" },
+            "/images/schaukel/7.jpg",
+            "/images/schaukel/07.jpg",
+            "/images/schaukel/8.jpg",
+            "/images/schaukel/9.jpg",
+            { type: "video", src: "/videos/schaukel/9.mp4" },
+            "/images/schaukel/10.jpg",
+            "/images/schaukel/11.jpg",
+            "/images/schaukel/12.jpg",
+            { type: "video", src: "/videos/schaukel/6.mp4" }
         ],
         hint: "[Hier deinen Hinweis zum Restaurant als Abschluss einfügen]",
         nextStation: "essen",
@@ -196,8 +209,8 @@ export const stations = {
         title: "Unser Abschluss",
         memory: "Du hast unsere Erinnerungsreise gemeistert! Jeder Ort erzählt ein Stück unserer Geschichte.\n\nUnd jetzt lass uns diesen besonderen Tag bei einem wunderbaren Essen ausklingen lassen.\n\nIch liebe dich ❤️",
         photos: [
-            "/images/finale1.jpg",
-            "/images/finale2.jpg"
+            "/images/schaukel/13.jpg"
+
         ],
         isFinal: true,
         prevStation: "schaukel"
