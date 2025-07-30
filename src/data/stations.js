@@ -16,7 +16,7 @@ export const stations = {
             },
             {
                 src: "/images/pingpong/pingpong3.jpeg",
-                protected: true
+                protected: false
             },
             {
                 type: "video",

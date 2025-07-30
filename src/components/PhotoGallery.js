@@ -441,10 +441,10 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
                                                ${dotIsVideo ? 'video-dot' : ''} 
                                                ${dotIsProtected ? 'protected-dot' : ''}`}
                                     onClick={() => goToPhoto(actualIndex)}
-                                    title={dotIsProtected && !isPasswordUnlocked ? 'Geschützt' :
+                                    title={dotIsProtected ? 'Geschützt' :
                                         dotIsVideo ? 'Video' : 'Foto'}
                                 >
-                                    {dotIsProtected && !isPasswordUnlocked ? (
+                                    {dotIsProtected ? (
                                         <span className="dot-icon">🔐</span>
                                     ) : dotIsVideo ? (
                                         <span className="dot-icon">🎥</span>
@@ -471,10 +471,10 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
                                        ${dotIsVideo ? 'video-dot' : ''} 
                                        ${dotIsProtected ? 'protected-dot' : ''}`}
                             onClick={() => goToPhoto(index)}
-                            title={dotIsProtected && !isPasswordUnlocked ? 'Geschützt' :
+                            title={dotIsProtected ? 'Geschützt' :
                                 dotIsVideo ? 'Video' : 'Foto'}
                         >
-                            {dotIsProtected && !isPasswordUnlocked ? (
+                            {dotIsProtected ? (
                                 <span className="dot-icon">🔐</span>
                             ) : dotIsVideo ? (
                                 <span className="dot-icon">🎥</span>
@@ -580,7 +580,7 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
                 <button className="arrow-btn-new next-arrow-new" onClick={nextPhoto}>→</button>
 
                 <div className="photo-counter-new">
-                    {currentIsProtected && !isPasswordUnlocked ? '🔐' :
+                    {currentIsProtected ? '🔐' :
                         currentIsVideo ? '🎥' : '📸'} {currentIndex + 1} / {photos.length}
                 </div>
 
