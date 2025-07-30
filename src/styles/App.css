@@ -195,6 +195,7 @@ body {
     width: 100%;
 }
 
+/* VERBESSERTE GALLERY WRAPPER FÜR VIDEOS */
 .gallery-wrapper-new {
     position: relative;
     background: #f8f9fa;
@@ -223,6 +224,26 @@ body {
     cursor: grabbing;
 }
 
+/* PORTRAIT/LANDSCAPE CONTAINER MODES */
+.gallery-wrapper-new.portrait-mode {
+    max-height: 85vh;
+    min-height: 300px;
+}
+
+.gallery-wrapper-new.landscape-mode {
+    max-height: 70vh;
+    min-height: 250px;
+}
+
+/* Portrait Video Container - Dynamische Anpassung */
+.gallery-wrapper-new:has(.gallery-video-new) {
+    /* Flexiblere Höhe für Videos */
+    min-height: 200px;
+    max-height: 85vh;
+    height: auto;
+}
+
+/* BASIS IMAGE/VIDEO STYLES */
 .gallery-image-new {
     max-width: 100%;
     max-height: 100%;
@@ -240,19 +261,63 @@ body {
     user-drag: none;
 }
 
-/* Video-spezifische Styles */
+/* VERBESSERTE VIDEO-SPEZIFISCHE STYLES */
 .gallery-video-new {
     border-radius: 10px;
     outline: none;
+    /* Entferne feste Größenbeschränkungen für Videos */
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+
+    /* WICHTIG: Videos sollen NICHT gecropped werden */
+    object-fit: contain !important;
+
+    /* Für sehr hohe Portrait-Videos */
+    max-height: 80vh;
 }
 
+/* Portrait Video Detection und Styles */
+.gallery-video-new[style*="aspect-ratio"] {
+    max-height: 80vh;
+    max-width: 100%;
+}
+
+/* Fallback für sehr breite Portrait-Videos */
+.gallery-video-new[data-orientation="portrait"] {
+    width: auto !important;
+    height: auto !important;
+    max-height: 80vh !important;
+    max-width: 100% !important;
+}
+
+/* VIDEO CONTROLS STYLING */
 .gallery-video-new::-webkit-media-controls-panel {
     background-color: rgba(0, 0, 0, 0.8);
 }
 
 .gallery-video-new::-webkit-media-controls-play-button,
-.gallery-video-new::-webkit-media-controls-volume-slider {
+.gallery-video-new::-webkit-media-controls-volume-slider,
+.gallery-video-new::-webkit-media-controls-timeline,
+.gallery-video-new::-webkit-media-controls-current-time-display,
+.gallery-video-new::-webkit-media-controls-time-remaining-display {
     filter: invert(1);
+}
+
+/* Firefox Video Controls */
+.gallery-video-new::-moz-media-controls {
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Verbesserte Container für Portrait Content */
+.portrait-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    max-height: 80vh;
 }
 
 /* Pfeil-Buttons */
@@ -339,12 +404,14 @@ body {
     margin-top: 20px;
     flex-wrap: wrap;
     max-width: 100%;
-    padding: 0 10px;
+    padding: 10px; /* Mehr Padding für Skalierung */
+    min-height: 40px; /* Mindesthöhe für den Container */
 }
 
 /* Viele Dots (9-15 Bilder) */
 .gallery-dots-new.many-dots {
     gap: 4px;
+    padding: 8px; /* Etwas weniger Padding bei kleinen Dots */
 }
 
 .gallery-dots-new.many-dots .dot-new {
@@ -368,10 +435,11 @@ body {
     gap: 6px;
     margin-top: 20px;
     overflow-x: auto;
-    padding: 10px;
+    padding: 10px; /* Padding für Scrollbereich */
     scrollbar-width: thin;
     scrollbar-color: #ccc transparent;
     scroll-behavior: smooth;
+    min-height: 50px; /* Mindesthöhe für Scrollbereich */
 }
 
 .gallery-dots-scrollable::-webkit-scrollbar {
@@ -394,7 +462,8 @@ body {
     align-items: center;
     gap: 8px;
     margin-top: 20px;
-    padding: 0 10px;
+    padding: 15px 10px; /* Mehr Padding oben und unten */
+    min-height: 60px; /* Mindesthöhe für den Container */
 }
 
 /* Jump Buttons */
@@ -402,16 +471,17 @@ body {
     background: rgba(0, 0, 0, 0.1);
     border: 2px solid #dee2e6;
     color: #6c757d;
-    width: 24px;
-    height: 24px;
+    width: 32px; /* Etwas größer gemacht */
+    height: 32px;
     border-radius: 50%;
     cursor: pointer;
-    font-size: 12px;
+    font-size: 14px; /* Etwas größer gemacht */
     font-weight: bold;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0; /* Verhindert Schrumpfen */
 }
 
 .jump-btn:hover {
@@ -428,31 +498,34 @@ body {
 /* Zentrale Dots Container */
 .navigation-dots {
     display: flex;
-    gap: 4px;
+    gap: 8px; /* Mehr Gap zwischen den Dots */
     justify-content: center;
+    align-items: center; /* Zentriert vertikal */
     flex-wrap: nowrap;
     overflow: hidden;
-    max-width: 240px;
+    max-width: 320px; /* Breiter gemacht */
+    min-height: 20px; /* Mindesthöhe für die Dots */
+    padding: 2px 0; /* Kleines Padding oben/unten */
 }
 
 .navigation-dots .dot-new {
-    width: 8px;
-    height: 8px;
+    width: 12px; /* Größer gemacht */
+    height: 12px;
     flex-shrink: 0;
 }
 
 .navigation-dots .dot-new.video-dot {
-    width: 12px;
-    height: 12px;
+    width: 16px; /* Größer gemacht */
+    height: 16px;
 }
 
 .navigation-dots .dot-new.protected-dot {
-    width: 10px;
-    height: 10px;
+    width: 14px; /* Größer gemacht */
+    height: 14px;
 }
 
 .navigation-dots .dot-icon {
-    font-size: 6px;
+    font-size: 8px; /* Größer gemacht */
 }
 
 /* Standard Dot Styling - VERBESSERT */
@@ -918,7 +991,162 @@ body {
     opacity: 0.5;
 }
 
-/* Mobile Responsiveness */
+/* LOADING & ERROR STYLES */
+
+/* Image Container */
+.image-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Loading Spinner Styles */
+.image-loading-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(248, 249, 250, 0.9);
+    backdrop-filter: blur(5px);
+    z-index: 5;
+}
+
+.image-loading-spinner {
+    text-align: center;
+    color: #6c757d;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f1f3f4;
+    border-top: 4px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-text {
+    font-size: 16px;
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* Image während Loading */
+.gallery-image-new.loading {
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+}
+
+/* Error Container */
+.image-error-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    min-height: 250px;
+}
+
+.image-error-content {
+    text-align: center;
+    padding: 30px;
+    max-width: 300px;
+}
+
+.error-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.error-text {
+    color: #6c757d;
+    font-size: 16px;
+    margin-bottom: 20px;
+    line-height: 1.4;
+}
+
+.retry-button {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.retry-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(102, 126, 234, 0.4);
+}
+
+.retry-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* Smooth Image Erscheinung */
+.gallery-image-new {
+    transition: opacity 0.3s ease;
+}
+
+.gallery-image-new:not(.loading) {
+    opacity: 1;
+}
+
+/* Loading State für Dots */
+.dot-new.loading {
+    background: linear-gradient(45deg, #f1f3f4, #dee2e6);
+    animation: pulse-dot 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+/* Error State für Dots */
+.dot-new.error {
+    background: linear-gradient(45deg, #ffcccb, #ff6b6b);
+    border: 2px solid #dc3545;
+}
+
+.dot-new.error::after {
+    content: "⚠️";
+    position: absolute;
+    font-size: 8px;
+    top: -2px;
+    right: -2px;
+}
+
+/* MOBILE RESPONSIVENESS */
 @media (max-width: 480px) {
     .container {
         padding: 10px;
@@ -952,6 +1180,22 @@ body {
     .gallery-wrapper-new {
         min-height: 200px;
         max-height: 70vh;
+    }
+
+    /* Mobile Video Portrait-spezifische Styles */
+    .gallery-video-new {
+        max-height: 70vh;
+        max-width: 100%;
+    }
+
+    .gallery-wrapper-new.portrait-mode {
+        max-height: 80vh;
+        min-height: 250px;
+    }
+
+    .gallery-wrapper-new.landscape-mode {
+        max-height: 65vh;
+        min-height: 200px;
     }
 
     .arrow-btn-new {
@@ -1021,37 +1265,38 @@ body {
 
     .gallery-navigation {
         gap: 6px;
-        padding: 0 5px;
+        padding: 12px 5px; /* Mehr Padding auf Mobile */
+        min-height: 50px; /* Mindesthöhe auf Mobile */
     }
 
     .jump-btn {
-        width: 20px;
-        height: 20px;
-        font-size: 10px;
+        width: 28px; /* Etwas größer auf Mobile */
+        height: 28px;
+        font-size: 12px;
     }
 
     .navigation-dots {
-        max-width: 180px;
-        gap: 3px;
+        max-width: 220px; /* Breiter auf Mobile */
+        gap: 6px; /* Mehr Gap auf Mobile */
     }
 
     .navigation-dots .dot-new {
-        width: 6px;
-        height: 6px;
-    }
-
-    .navigation-dots .dot-new.video-dot {
-        width: 10px;
-        height: 10px;
-    }
-
-    .navigation-dots .dot-new.protected-dot {
-        width: 8px;
+        width: 8px; /* Größer auf Mobile */
         height: 8px;
     }
 
+    .navigation-dots .dot-new.video-dot {
+        width: 12px; /* Größer auf Mobile */
+        height: 12px;
+    }
+
+    .navigation-dots .dot-new.protected-dot {
+        width: 10px; /* Größer auf Mobile */
+        height: 10px;
+    }
+
     .navigation-dots .dot-icon {
-        font-size: 5px;
+        font-size: 6px; /* Größer auf Mobile */
     }
 
     /* Mobile Birthday Responsiveness */
@@ -1109,24 +1354,84 @@ body {
     .video-placeholder {
         font-size: 48px;
     }
+
+    /* Mobile Loading/Error */
+    .image-loading-spinner {
+        transform: scale(0.8);
+    }
+
+    .spinner {
+        width: 30px;
+        height: 30px;
+        border-width: 3px;
+    }
+
+    .loading-text {
+        font-size: 14px;
+    }
+
+    .image-error-content {
+        padding: 20px;
+    }
+
+    .error-icon {
+        font-size: 36px;
+    }
+
+    .error-text {
+        font-size: 14px;
+    }
+
+    .retry-button {
+        padding: 10px 16px;
+        font-size: 13px;
+    }
 }
 
-/* Tablet Anpassungen */
+/* TABLET ANPASSUNGEN */
 @media (min-width: 481px) and (max-width: 768px) {
     .gallery-wrapper-new {
         min-height: 250px;
         max-height: 75vh;
     }
 
+    /* Tablet Video Portrait-spezifische Styles */
+    .gallery-video-new {
+        max-height: 75vh;
+    }
+
+    .gallery-wrapper-new.portrait-mode {
+        max-height: 80vh;
+    }
+
+    .gallery-wrapper-new.landscape-mode {
+        max-height: 70vh;
+    }
+
     .navigation-dots {
-        max-width: 200px;
+        max-width: 280px; /* Breiter auf Tablet */
     }
 }
 
-/* Desktop */
+/* DESKTOP */
 @media (min-width: 769px) {
     .gallery-wrapper-new {
         min-height: 300px;
         max-height: 80vh;
+    }
+
+    /* Desktop Video Portrait-spezifische Styles */
+    .gallery-video-new {
+        max-height: 80vh;
+    }
+
+    .gallery-wrapper-new.portrait-mode {
+        max-height: 85vh;
+        min-height: 350px;
+    }
+
+    .gallery-wrapper-new.landscape-mode {
+        max-height: 75vh;
+        min-height: 300px;
     }
 }

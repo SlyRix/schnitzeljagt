@@ -6,6 +6,14 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
     const [startX, setStartX] = useState(0);
     const [isSwiping, setIsSwiping] = useState(false);
     const [showPasswordModal, setShowPasswordModal] = useState(false);
+
+    // Loading States
+    const [imageLoadStates, setImageLoadStates] = useState({});
+    const [imageErrors, setImageErrors] = useState({});
+
+    // NEU: Video-Orientierung States
+    const [videoOrientations, setVideoOrientations] = useState({});
+
     const containerRef = useRef(null);
     const videoRef = useRef(null);
     const dotsRef = useRef(null);
@@ -19,14 +27,96 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
         );
     }
 
-    // Funktion um zu entscheiden, welche Dot-Darstellung verwendet wird
+    // NEU: Video Metadata laden und Orientierung bestimmen
+    const handleVideoLoadedMetadata = (index) => {
+        const video = videoRef.current;
+        if (video) {
+            const isPortrait = video.videoHeight > video.videoWidth;
+            const aspectRatio = video.videoWidth / video.videoHeight;
+
+            setVideoOrientations(prev => ({
+                ...prev,
+                [index]: {
+                    isPortrait,
+                    aspectRatio,
+                    width: video.videoWidth,
+                    height: video.videoHeight
+                }
+            }));
+
+            // Container-Klasse dynamisch setzen
+            if (containerRef.current) {
+                if (isPortrait) {
+                    containerRef.current.classList.add('portrait-mode');
+                    containerRef.current.classList.remove('landscape-mode');
+                } else {
+                    containerRef.current.classList.add('landscape-mode');
+                    containerRef.current.classList.remove('portrait-mode');
+                }
+            }
+
+            console.log(`Video ${index}: ${video.videoWidth}x${video.videoHeight}, Portrait: ${isPortrait}`);
+        }
+    };
+
+    // Bild Loading Funktionen
+    const handleImageLoad = (index) => {
+        setImageLoadStates(prev => ({
+            ...prev,
+            [index]: 'loaded'
+        }));
+        setImageErrors(prev => ({
+            ...prev,
+            [index]: false
+        }));
+    };
+
+    const handleImageError = (index) => {
+        console.error(`Fehler beim Laden von Bild ${index}`);
+        setImageLoadStates(prev => ({
+            ...prev,
+            [index]: 'error'
+        }));
+        setImageErrors(prev => ({
+            ...prev,
+            [index]: true
+        }));
+    };
+
+    const handleImageLoadStart = (index) => {
+        setImageLoadStates(prev => ({
+            ...prev,
+            [index]: 'loading'
+        }));
+    };
+
+    // RETRY FUNKTION
+    const retryImageLoad = (index) => {
+        setImageLoadStates(prev => ({
+            ...prev,
+            [index]: 'loading'
+        }));
+        setImageErrors(prev => ({
+            ...prev,
+            [index]: false
+        }));
+
+        const img = new Image();
+        const item = photos[index];
+        const src = getItemSrc(item);
+        img.src = `${src}?t=${Date.now()}`;
+
+        img.onload = () => handleImageLoad(index);
+        img.onerror = () => handleImageError(index);
+    };
+
+    // Navigation Funktionen
     const getDotContainerClass = (photoCount) => {
         if (photoCount > 15) return 'gallery-dots-scrollable';
         if (photoCount > 8) return 'gallery-dots-new many-dots';
         return 'gallery-dots-new';
     };
 
-    // Funktion um den aktiven Dot in den sichtbaren Bereich zu scrollen
     const scrollToActiveDot = (containerRef, currentIndex, photoCount) => {
         if (photoCount <= 15) return;
 
@@ -55,7 +145,6 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
         setCurrentIndex((prev) => (prev - 1 + photos.length) % photos.length);
     };
 
-    // Jump to first photo
     const jumpToFirst = () => {
         if (!photos || photos.length === 0) return;
         const firstItem = photos[0];
@@ -66,7 +155,6 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
         setCurrentIndex(0);
     };
 
-    // Jump to last photo
     const jumpToLast = () => {
         if (!photos || photos.length === 0) return;
         const lastIndex = photos.length - 1;
@@ -81,7 +169,6 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
     const goToPhoto = (index) => {
         if (!photos || index < 0 || index >= photos.length) return;
 
-        // Prüfe ob das gewählte Foto geschützt ist
         const selectedItem = photos[index];
         if (isProtected(selectedItem) && !isPasswordUnlocked) {
             setShowPasswordModal(true);
@@ -91,13 +178,12 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
         setCurrentIndex(index);
     };
 
-    // Prüfe ob Item geschützt ist
+    // Utility Funktionen
     const isProtected = (item) => {
         if (!item) return false;
         return item.protected === true;
     };
 
-    // Prüfe ob aktuelles Item ein Video ist
     const isVideo = (item) => {
         if (!item) return false;
         if (typeof item === 'string') {
@@ -108,21 +194,47 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
         return item && item.type === 'video';
     };
 
-    // URL extrahieren (falls es ein Objekt ist)
     const getItemSrc = (item) => {
         if (!item) return '';
         return typeof item === 'string' ? item : (item.src || '');
     };
 
-    // Handle protected content click
     const handleProtectedClick = () => {
         setShowPasswordModal(true);
     };
 
-    // Handle password success
     const handlePasswordSuccess = () => {
         onPasswordUnlock();
     };
+
+    // PRELOADING EFFECT
+    useEffect(() => {
+        if (!photos || photos.length <= 1) return;
+
+        const preloadImages = () => {
+            const indicesToPreload = [
+                (currentIndex + 1) % photos.length,
+                (currentIndex - 1 + photos.length) % photos.length
+            ];
+
+            indicesToPreload.forEach(index => {
+                const item = photos[index];
+                if (!item || isVideo(item) || (isProtected(item) && !isPasswordUnlocked)) return;
+
+                const src = getItemSrc(item);
+                if (src && !imageLoadStates[index]) {
+                    const img = new Image();
+                    img.onload = () => handleImageLoad(index);
+                    img.onerror = () => handleImageError(index);
+                    img.src = src;
+                    handleImageLoadStart(index);
+                }
+            });
+        };
+
+        const timeoutId = setTimeout(preloadImages, 100);
+        return () => clearTimeout(timeoutId);
+    }, [currentIndex, photos, isPasswordUnlocked, imageLoadStates]);
 
     // Auto-Scroll zu aktivem Dot
     useEffect(() => {
@@ -131,35 +243,68 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
         }
     }, [currentIndex, photos]);
 
-    // Auto-play Video wenn auf Video gewechselt wird
+    // VERBESSERTES VIDEO AUTOPLAY
     useEffect(() => {
         if (videoRef.current &&
             photos &&
             photos[currentIndex] &&
             isVideo(photos[currentIndex]) &&
             (!isProtected(photos[currentIndex]) || isPasswordUnlocked)) {
-            // Versuche Video mit Ton zu starten
-            videoRef.current.muted = false;
-            videoRef.current.play().catch((error) => {
-                // Falls autoplay mit Ton blockiert wird, versuche es stumm
-                console.log('Autoplay mit Ton wurde blockiert:', error);
-                if (videoRef.current) {
-                    videoRef.current.muted = true;
-                    videoRef.current.play().catch(() => {
-                        console.log('Auch stummer Autoplay wurde blockiert');
-                    });
+
+            const video = videoRef.current;
+
+            const playVideo = async () => {
+                try {
+                    // Warte kurz damit das Video richtig geladen ist
+                    await new Promise(resolve => setTimeout(resolve, 100));
+
+                    video.muted = false;
+                    await video.play();
+                } catch (error) {
+                    console.log('Autoplay mit Ton wurde blockiert:', error);
+                    try {
+                        if (video) {
+                            video.muted = true;
+                            await video.play();
+                        }
+                    } catch (muteError) {
+                        console.log('Auch stummer Autoplay wurde blockiert:', muteError);
+                    }
                 }
-            });
+            };
+
+            playVideo();
         }
     }, [currentIndex, photos, isPasswordUnlocked]);
 
-    // Touch Start
+    // Container-Orientierung Effect
+    useEffect(() => {
+        if (containerRef.current && photos && photos[currentIndex]) {
+            const currentItem = photos[currentIndex];
+            const currentIsVideo = isVideo(currentItem);
+
+            if (currentIsVideo && videoOrientations[currentIndex]) {
+                const orientation = videoOrientations[currentIndex];
+                if (orientation.isPortrait) {
+                    containerRef.current.classList.add('portrait-mode');
+                    containerRef.current.classList.remove('landscape-mode');
+                } else {
+                    containerRef.current.classList.add('landscape-mode');
+                    containerRef.current.classList.remove('portrait-mode');
+                }
+            } else {
+                // Für Bilder Standard-Klasse
+                containerRef.current.classList.remove('portrait-mode', 'landscape-mode');
+            }
+        }
+    }, [currentIndex, videoOrientations, photos]);
+
+    // Touch/Mouse Events
     const handleTouchStart = (e) => {
         setStartX(e.touches[0].clientX);
         setIsSwiping(true);
     };
 
-    // Touch End
     const handleTouchEnd = (e) => {
         if (!isSwiping) return;
 
@@ -168,15 +313,14 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
         const minSwipeDistance = 50;
 
         if (diff > minSwipeDistance) {
-            nextPhoto(); // Swipe links = nächstes
+            nextPhoto();
         } else if (diff < -minSwipeDistance) {
-            prevPhoto(); // Swipe rechts = vorheriges
+            prevPhoto();
         }
 
         setIsSwiping(false);
     };
 
-    // Mouse Events für Desktop
     const handleMouseDown = (e) => {
         setStartX(e.clientX);
         setIsSwiping(true);
@@ -198,7 +342,28 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
         setIsSwiping(false);
     };
 
-    // Render protected placeholder
+    // UI Components
+    const LoadingSpinner = () => (
+        <div className="image-loading-container">
+            <div className="image-loading-spinner">
+                <div className="spinner"></div>
+                <div className="loading-text">Lädt...</div>
+            </div>
+        </div>
+    );
+
+    const ImageError = ({ index, onRetry }) => (
+        <div className="image-error-container">
+            <div className="image-error-content">
+                <div className="error-icon">⚠️</div>
+                <div className="error-text">Bild konnte nicht geladen werden</div>
+                <button className="retry-button" onClick={() => onRetry(index)}>
+                    🔄 Nochmal versuchen
+                </button>
+            </div>
+        </div>
+    );
+
     const renderProtectedPlaceholder = (item) => {
         const itemIsVideo = isVideo(item);
         return (
@@ -223,27 +388,46 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
         );
     };
 
-    // Render Dots mit verbesserter Logik - OHNE Nummerierung
+    // VERBESSERTES VIDEO RENDERING
+    const renderVideo = (item, index) => {
+        const src = getItemSrc(item);
+        const orientation = videoOrientations[index];
+
+        return (
+            <video
+                ref={videoRef}
+                src={src}
+                className="gallery-image-new gallery-video-new"
+                controls
+                playsInline
+                loop
+                preload="metadata"
+                key={`${currentIndex}-${src}`}
+                onLoadedMetadata={() => handleVideoLoadedMetadata(index)}
+                data-orientation={orientation?.isPortrait ? 'portrait' : 'landscape'}
+                style={{
+                    ...(orientation?.isPortrait && {
+                        maxHeight: '80vh',
+                        maxWidth: '100%',
+                        width: 'auto',
+                        height: 'auto'
+                    })
+                }}
+            />
+        );
+    };
+
+    // Render Dots
     const renderDots = () => {
         if (!photos || photos.length <= 1) return null;
 
         const photoCount = photos.length;
         const dotContainerClass = getDotContainerClass(photoCount);
 
-        // Für sehr viele Bilder: Kompakte Navigation OHNE Counter
         if (photoCount > 20) {
             return (
                 <div className="gallery-navigation">
-                    {/* Jump to first button */}
-                    <button
-                        className="jump-btn"
-                        onClick={jumpToFirst}
-                        title="Zum ersten Bild"
-                    >
-                        ⇤
-                    </button>
-
-                    {/* Zentrale Dots - nur 5 um das aktuelle herum */}
+                    <button className="jump-btn" onClick={jumpToFirst} title="Zum ersten Bild">⇤</button>
                     <div className="navigation-dots">
                         {photos.slice(Math.max(0, currentIndex - 2), Math.min(photos.length, currentIndex + 3)).map((item, relativeIndex) => {
                             const actualIndex = Math.max(0, currentIndex - 2) + relativeIndex;
@@ -269,20 +453,11 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
                             );
                         })}
                     </div>
-
-                    {/* Jump to last button */}
-                    <button
-                        className="jump-btn"
-                        onClick={jumpToLast}
-                        title="Zum letzten Bild"
-                    >
-                        ⇥
-                    </button>
+                    <button className="jump-btn" onClick={jumpToLast} title="Zum letzten Bild">⇥</button>
                 </div>
             );
         }
 
-        // Standard Dots für normale Anzahl
         return (
             <div className={dotContainerClass} ref={dotsRef}>
                 {photos.map((item, index) => {
@@ -311,44 +486,41 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
         );
     };
 
-    // Nur ein Item (Foto oder Video)
+    // Single Item Rendering
     if (photos.length === 1) {
         const singleItem = photos[0];
         if (!singleItem) {
-            return (
-                <div className="photo-placeholder">
-                    📸 Foto wird geladen...
-                </div>
-            );
+            return <div className="photo-placeholder">📸 Foto wird geladen...</div>;
         }
 
         const itemSrc = getItemSrc(singleItem);
         const singleIsVideo = isVideo(singleItem);
         const singleIsProtected = isProtected(singleItem);
+        const loadState = imageLoadStates[0];
+        const hasError = imageErrors[0];
 
         return (
             <div className="photo-gallery-new">
-                <div className="gallery-wrapper-new">
+                <div className="gallery-wrapper-new" ref={containerRef}>
                     {singleIsProtected && !isPasswordUnlocked ? (
                         renderProtectedPlaceholder(singleItem)
                     ) : singleIsVideo ? (
-                        <video
-                            ref={videoRef}
-                            src={itemSrc}
-                            className="gallery-image-new gallery-video-new"
-                            controls
-                            playsInline
-                            autoPlay
-                            loop
-                            key={currentIndex}
-                        />
+                        renderVideo(singleItem, 0)
+                    ) : hasError ? (
+                        <ImageError index={0} onRetry={retryImageLoad} />
                     ) : (
-                        <img
-                            src={itemSrc}
-                            alt={`${stationTitle} - Foto`}
-                            className="gallery-image-new"
-                            draggable={false}
-                        />
+                        <div className="image-container">
+                            {loadState === 'loading' && <LoadingSpinner />}
+                            <img
+                                src={itemSrc}
+                                alt={`${stationTitle} - Foto`}
+                                className={`gallery-image-new ${loadState === 'loading' ? 'loading' : ''}`}
+                                draggable={false}
+                                onLoadStart={() => handleImageLoadStart(0)}
+                                onLoad={() => handleImageLoad(0)}
+                                onError={() => handleImageError(0)}
+                            />
+                        </div>
                     )}
                 </div>
 
@@ -361,23 +533,20 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
         );
     }
 
-    // Aktuelles Item
+    // Main Gallery Rendering
     const currentItem = photos && photos[currentIndex] ? photos[currentIndex] : null;
     if (!currentItem) {
-        return (
-            <div className="photo-placeholder">
-                📸 Foto wird geladen...
-            </div>
-        );
+        return <div className="photo-placeholder">📸 Foto wird geladen...</div>;
     }
 
     const currentIsVideo = isVideo(currentItem);
     const currentSrc = getItemSrc(currentItem);
     const currentIsProtected = isProtected(currentItem);
+    const currentLoadState = imageLoadStates[currentIndex];
+    const currentHasError = imageErrors[currentIndex];
 
     return (
         <div className="photo-gallery-new">
-            {/* Haupt-Galerie */}
             <div
                 ref={containerRef}
                 className="gallery-wrapper-new swipeable"
@@ -389,51 +558,35 @@ const PhotoGallery = ({ photos, stationTitle, isPasswordUnlocked, onPasswordUnlo
                 {currentIsProtected && !isPasswordUnlocked ? (
                     renderProtectedPlaceholder(currentItem)
                 ) : currentIsVideo ? (
-                    <video
-                        ref={videoRef}
-                        src={currentSrc}
-                        className="gallery-image-new gallery-video-new"
-                        controls
-                        playsInline
-                        loop
-                        key={currentIndex}
-                    />
+                    renderVideo(currentItem, currentIndex)
+                ) : currentHasError ? (
+                    <ImageError index={currentIndex} onRetry={retryImageLoad} />
                 ) : (
-                    <img
-                        src={currentSrc}
-                        alt={`${stationTitle} - ${currentIsVideo ? 'Video' : 'Foto'} ${currentIndex + 1}`}
-                        className="gallery-image-new"
-                        draggable={false}
-                    />
+                    <div className="image-container">
+                        {currentLoadState === 'loading' && <LoadingSpinner />}
+                        <img
+                            src={currentSrc}
+                            alt={`${stationTitle} - ${currentIsVideo ? 'Video' : 'Foto'} ${currentIndex + 1}`}
+                            className={`gallery-image-new ${currentLoadState === 'loading' ? 'loading' : ''}`}
+                            draggable={false}
+                            onLoadStart={() => handleImageLoadStart(currentIndex)}
+                            onLoad={() => handleImageLoad(currentIndex)}
+                            onError={() => handleImageError(currentIndex)}
+                        />
+                    </div>
                 )}
 
-                {/* Pfeil-Buttons */}
-                <button
-                    className="arrow-btn-new prev-arrow-new"
-                    onClick={prevPhoto}
-                >
-                    ←
-                </button>
-                <button
-                    className="arrow-btn-new next-arrow-new"
-                    onClick={nextPhoto}
-                >
-                    →
-                </button>
+                <button className="arrow-btn-new prev-arrow-new" onClick={prevPhoto}>←</button>
+                <button className="arrow-btn-new next-arrow-new" onClick={nextPhoto}>→</button>
 
-                {/* Counter mit Icon - BLEIBT oben rechts */}
                 <div className="photo-counter-new">
                     {currentIsProtected && !isPasswordUnlocked ? '🔐' :
                         currentIsVideo ? '🎥' : '📸'} {currentIndex + 1} / {photos.length}
                 </div>
 
-                {/* Swipe-Hint */}
-                <div className="swipe-hint-new">
-                    ← Swipe →
-                </div>
+                <div className="swipe-hint-new">← Swipe →</div>
             </div>
 
-            {/* Verbesserte Dots - OHNE zusätzliche Nummerierung */}
             {renderDots()}
 
             <PasswordModal
