@@ -339,7 +339,7 @@ export const stations = {
             },
             {
                 type: "video",
-                src: "/videos/crazy/3.MOV",
+                src: "/videos/crazy/3.mp4",
                 protected: true
             },
             {
