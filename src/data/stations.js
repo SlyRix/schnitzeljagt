@@ -141,14 +141,14 @@ export const stations = {
                 protected: false
             }
         ],
-        hint: "Ez deffsch mal go en chillige iced cafe latte mit caramel sirup go bstelle und trinke. ☕️, dort wartet die nächste Surprise uf dich! 🏪",
+        hint: "Ez deffsch mal go en chillige iced cafe latte mit caramel sirup go bstelle und trinke. ☕️, dort wartet die nächsti Surprise uf dich! 🏪",
         nextStation: "starbucks",
         prevStation: "pingpong"
     },
     starbucks: {
         number: "3",
         title: "Starbucks",
-        memory: "So gnüss dini Kaffi und Gschenkli 😊. Hoffe es gfallt dir! denkt ich hau mal paar erinnerigs Fotis ine vo letzt Geburtstag.",
+        memory: "So gnüss dini Kaffi und Gschenkli 😊. Hoffe es gfallt dir! denkt ich hau mal paar erinnerigs Fotis ine.",
         photos: [
             {
                 src: "/images/geschenk/1.jpg",
@@ -318,14 +318,14 @@ export const stations = {
                 protected: false
             }
         ],
-        hint: "",
+        hint: "Ah dem Ort simmer oft here gfahre zum eh schöni ussicht uf züriseegnüsse und 2sammkeits gnüsse.",
         nextStation: "versteck",
         prevStation: "starbucks"
     },
     versteck: {
         number: "5",
-        title: "Versteckspots",
-        memory: "[Hier deine Erinnerung an eure geheimen Versteckspots einfügen]",
+        title: "Lets Get Crazy",
+        memory: "Ah dem Ort hani viel Crazy Erinnerige mit dir. Drum nimm ich dich uf eh reis wo mer ganz crazy gsie sind 🤪",
         photos: [
             {
                 type: "video",
@@ -408,14 +408,14 @@ export const stations = {
                 protected: true
             }
         ],
-        hint: "[Hier deinen Hinweis zu dem Ort, wo ihr zusammengekommen seid, einfügen]",
+        hint: "Wo simmer zämme cho?",
         nextStation: "zusammen",
         prevStation: "ost"
     },
     zusammen: {
         number: "6",
-        title: "Wo wir zusammen kamen",
-        memory: "[Hier die Geschichte eures Zusammenkommens einfügen]",
+        title: "❤️ 09-März-2023 ❤️",
+        memory: "Ich wot üsi schöni ziite zämme festhalte, drum han ich paar Fotis und Videos für dich zäme gstellt🥰. Und es bsunders Gschenkli wartet au uf dich - will wänn du das nächschte mal Geburtstag fiihrsch, sind mir scho als glücklichs Ehepaar verbunde 💍❤️",
         photos: [
             {
                 src: "/images/love/001.jpg",
@@ -513,14 +513,14 @@ export const stations = {
                 protected: false
             }
         ],
-        hint: "[Hier deinen Hinweis zur Schaukel einfügen]",
+        hint: "Und jetzt gommer zäme go schaukel, wie frühenr als chind. Döt wartet die nächschti Station uf dich! 🛝",
         nextStation: "schaukel",
         prevStation: "versteck"
     },
     schaukel: {
         number: "7",
         title: "Schaukel",
-        memory: "[Hier deine Erinnerung an die Schaukel einfügen]",
+        memory: "Wir sind so oft scho zämme da duregloffe, und sogar mal da am schaukle gsie. Ich wot das mer egal wie alt mir sind, immer wieder mal uf eh schaukel sitzet und d'Ziit zäme gnüsse. 🛝",
         photos: [
             {
                 type: "video",
@@ -597,14 +597,14 @@ export const stations = {
                 protected: false
             }
         ],
-        hint: "[Hier deinen Hinweis zum Restaurant als Abschluss einfügen]",
+        hint: "",
         nextStation: "essen",
         prevStation: "zusammen"
     },
     essen: {
         number: "🎉",
-        title: "Unser Abschluss",
-        memory: "Du hast unsere Erinnerungsreise gemeistert! Jeder Ort erzählt ein Stück unserer Geschichte.\n\nUnd jetzt lass uns diesen besonderen Tag bei einem wunderbaren Essen ausklingen lassen.\n\nIch liebe dich ❤️",
+        title: "Finale - Essen",
+        memory: "Daymm , Sivania Kokka.\n Du hasch die Schnizeljagt so locker gschafft! Jetzt isch es ziit für es feins Znacht zäme. Ich hoffe du hesch Spass gha und hasch es gnosse. \nVergiss nöd, du bisch und wirsch min chline Pingu sie für immer 🐧💕",
         photos: [
             {
                 src: "/images/schaukel/13.jpg",

@@ -13,7 +13,7 @@ const HeartIcon = () => (
             }, 10);
         }}
     >
-        💕
+
     </span>
 );
 
@@ -51,8 +51,10 @@ const StationCard = ({ station, stationKey, onNavigate, isPasswordUnlocked, onPa
                 </div>
             )}
 
-            {/* DEV NAVIGATION - Kommentiere diese Zeile aus für Production */}
-            {DEV_MODE && <Navigation station={station} onNavigate={onNavigate} />}
+            {/* Navigation: Immer anzeigen wenn es die letzte Station ist (führt zum Finale), sonst nur im DEV_MODE */}
+            {(DEV_MODE || station.nextStation === 'essen') && (
+                <Navigation station={station} onNavigate={onNavigate} />
+            )}
         </div>
     );
 };

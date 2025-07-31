@@ -20,7 +20,7 @@ const FinalScreen = ({ station, onNavigate, isPasswordUnlocked, onPasswordUnlock
                 <div className="birthday-message">
                     <div className="big-age">2️⃣6️⃣</div>
                     <div className="birthday-wishes">
-                        Alles Liebe zum Geburtstag, Sivani! ✨
+                        Happy Birthday, Sivani! ✨
                     </div>
                 </div>
 
@@ -42,10 +42,13 @@ const FinalScreen = ({ station, onNavigate, isPasswordUnlocked, onPasswordUnlock
 
                 <div className="birthday-footer">
                     <div className="celebration-text">
-                        🎂 Sivani's 26. Geburtstag 2025 🎂
+                        🎂 Sivani's 26. Geburtstag  🎂
+                    </div>
+                    <div className="celebration-text">
+                         2. Aug. 2025
                     </div>
                     <div className="love-message">
-                        Eine Reise durch unsere Erinnerungen 💕
+                        💕mit ganz viel Liebi Rushel💕
                     </div>
                 </div>
             </div>

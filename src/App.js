@@ -8,19 +8,40 @@ function App() {
   const [currentStation, setCurrentStation] = useState('start');
   const [isPasswordUnlocked, setIsPasswordUnlocked] = useState(false);
 
-  // Get station from URL hash on component mount
+  // Handle hash changes from URL (including QR code scans)
   useEffect(() => {
-    const hash = window.location.hash.substring(1);
-    if (hash && stations[hash]) {
-      setCurrentStation(hash);
-    }
+    const handleHashChange = () => {
+      const hash = window.location.hash.substring(1);
+      console.log('Hash changed to:', hash); // Debug log
+
+      if (hash && stations[hash]) {
+        setCurrentStation(hash);
+        window.scrollTo(0, 0);
+      } else if (!hash) {
+        // If no hash, go to start
+        setCurrentStation('start');
+      }
+    };
+
+    // Check hash on initial load
+    handleHashChange();
+
+    // Listen for hash changes (QR code scans, back/forward buttons, etc.)
+    window.addEventListener('hashchange', handleHashChange);
+
+    // Cleanup event listener
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+    };
   }, []);
 
-  // Update URL when station changes
+  // Update URL when station changes programmatically
   const navigateToStation = (stationId) => {
-    setCurrentStation(stationId);
-    window.location.hash = stationId;
-    window.scrollTo(0, 0);
+    if (stationId !== currentStation) {
+      setCurrentStation(stationId);
+      window.location.hash = stationId;
+      window.scrollTo(0, 0);
+    }
   };
 
   // Handle password unlock
@@ -31,7 +52,20 @@ function App() {
   const currentStationData = stations[currentStation];
 
   if (!currentStationData) {
-    return <div className="container">Station nicht gefunden</div>;
+    return (
+        <div className="container">
+          <div className="station">
+            <h2>Station nicht gefunden 😕</h2>
+            <p>Die angeforderte Station "{currentStation}" existiert nicht.</p>
+            <button
+                className="nav-button"
+                onClick={() => navigateToStation('start')}
+            >
+              Zurück zum Start
+            </button>
+          </div>
+        </div>
+    );
   }
 
   return (
