@@ -156,7 +156,7 @@ export const stations = {
             },
             {
                 src: "/images/geschenk/2.jpg",
-                protected: true
+                protected: false
             },
             {
                 src: "/images/geschenk/3.jpg",
