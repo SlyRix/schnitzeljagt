@@ -389,6 +389,11 @@ export const stations = {
                 protected: true
             },
             {
+                type: "video",
+                src: "/videos/crazy/12.MP4",
+                protected: false
+            },
+            {
                 src: "/images/crazy/10.jpg",
                 protected: false
             },
@@ -408,12 +413,102 @@ export const stations = {
                 protected: true
             }
         ],
-        hint: "Wo simmer zämme cho?",
-        nextStation: "zusammen",
-        prevStation: "ost"
+        hint: "Und jetzt gommer zäme go schaukle und es spazierli am see go mache, wie frühener. Döt wartet die nächschti Station uf dich!",
+        nextStation: "schaukel",
+        prevStation: "zusammen"
     },
-    zusammen: {
+        schaukel: {
         number: "6",
+        title: "Schaukel",
+        memory: "Wir sind so oft scho zämme da duregloffe, und sogar mal da am schaukle gsie. Ich wot das mer egal wie alt mir sind, immer wieder mal uf eh schaukel sitzet und d'Ziit zäme gnüsse. 🛝",
+        photos: [
+            {
+                type: "video",
+                src: "/videos/schaukel/1.MP4",
+                protected: false
+            },
+            {
+                src: "/images/schaukel/2.jpg",
+                protected: false
+            },
+            {
+                src: "/images/schaukel/3.jpg",
+                protected: false
+            },
+
+            {
+                src: "/images/schaukel/4.jpg",
+                protected: false
+            },
+            {
+                src: "/images/schaukel/04.jpg",
+                protected: false
+            },
+
+            {
+                src: "/images/schaukel/05.jpg",
+                protected: false
+            },
+            {
+                type: "video",
+                src: "/videos/schaukel/4.mp4",
+                protected: false
+            },
+            {
+                src: "/images/schaukel/5.jpg",
+                protected: false
+            },
+            {
+                src: "/images/schaukel/7.jpg",
+                protected: false
+            },
+            {
+                src: "/images/schaukel/07.jpg",
+                protected: false
+            },
+            {
+                type: "video",
+                src: "/videos/schaukel/10.MP4",
+                protected: false
+            },
+            {
+                src: "/images/schaukel/8.jpg",
+                protected: false
+            },
+            {
+                src: "/images/schaukel/9.jpg",
+                protected: false
+            },
+            {
+                type: "video",
+                src: "/videos/schaukel/9.MP4",
+                protected: false
+            },
+            {
+                src: "/images/schaukel/10.jpg",
+                protected: false
+            },
+            {
+                src: "/images/schaukel/11.jpg",
+                protected: false
+            },
+            {
+                src: "/images/schaukel/12.jpg",
+                protected: true
+            },
+            {
+                type: "video",
+                src: "/videos/schaukel/6.MP4",
+                protected: false
+            }
+        ],
+        hint: "❤️09.März.2023 , hehe❤️",
+        nextStation: "zusammen",
+        prevStation: "versteck"
+    },
+
+    zusammen: {
+        number: "7",
         title: "❤️ 09-März-2023 ❤️",
         memory: "Ich wot üsi schöni ziite zämme festhalte, drum han ich paar Fotis und Videos für dich zäme gstellt🥰. Und es bsunders Gschenkli wartet au uf dich - will wänn du das nächschte mal Geburtstag fiihrsch, sind mir scho als glücklichs Ehepaar verbunde 💍❤️",
         photos: [
@@ -513,93 +608,9 @@ export const stations = {
                 protected: false
             }
         ],
-        hint: "Und jetzt gommer zäme go schaukel, wie frühenr als chind. Döt wartet die nächschti Station uf dich! 🛝",
-        nextStation: "schaukel",
-        prevStation: "versteck"
-    },
-    schaukel: {
-        number: "7",
-        title: "Schaukel",
-        memory: "Wir sind so oft scho zämme da duregloffe, und sogar mal da am schaukle gsie. Ich wot das mer egal wie alt mir sind, immer wieder mal uf eh schaukel sitzet und d'Ziit zäme gnüsse. 🛝",
-        photos: [
-            {
-                type: "video",
-                src: "/videos/schaukel/1.MP4",
-                protected: false
-            },
-            {
-                src: "/images/schaukel/2.jpg",
-                protected: false
-            },
-            {
-                src: "/images/schaukel/3.jpg",
-                protected: false
-            },
-
-            {
-                src: "/images/schaukel/4.jpg",
-                protected: false
-            },
-            {
-                src: "/images/schaukel/04.jpg",
-                protected: false
-            },
-
-            {
-                src: "/images/schaukel/05.jpg",
-                protected: false
-            },
-            {
-                type: "video",
-                src: "/videos/schaukel/4.mp4",
-                protected: false
-            },
-            {
-                src: "/images/schaukel/5.jpg",
-                protected: false
-            },
-            {
-                src: "/images/schaukel/7.jpg",
-                protected: false
-            },
-            {
-                src: "/images/schaukel/07.jpg",
-                protected: false
-            },
-            {
-                src: "/images/schaukel/8.jpg",
-                protected: false
-            },
-            {
-                src: "/images/schaukel/9.jpg",
-                protected: false
-            },
-            {
-                type: "video",
-                src: "/videos/schaukel/9.MP4",
-                protected: false
-            },
-            {
-                src: "/images/schaukel/10.jpg",
-                protected: false
-            },
-            {
-                src: "/images/schaukel/11.jpg",
-                protected: false
-            },
-            {
-                src: "/images/schaukel/12.jpg",
-                protected: true
-            },
-            {
-                type: "video",
-                src: "/videos/schaukel/6.MP4",
-                protected: false
-            }
-        ],
         hint: "",
         nextStation: "essen",
-        prevStation: "zusammen"
+        prevStation: "schaukel"
     },
     essen: {
         number: "🎉",
